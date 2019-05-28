@@ -1,4 +1,11 @@
 {
 	"name": "egret",
-	"version": "5.2.7"
+	"version": "5.2.7",
+	"main": "gulpfile.js",
+	"devDependencies": {
+		"gulp": "^3.9.1",
+		"gulp-concat": "^2.6.1",
+		"gulp-uglify": "^3.0.0",
+		"uglify-js": "^3.4.2"
+	}
 }

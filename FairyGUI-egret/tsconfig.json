@@ -1,6 +1,7 @@
 {
     "compilerOptions": {
-        "target": "es5",
+		"target": "es5",
+		"noEmitHelpers": true,
         "outFile": "bin/fairygui/fairygui.js",
         "declaration": true
     },

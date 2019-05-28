@@ -1,0 +1,5 @@
+*.swp
+*.swo
+*/.DS_Store
+.DS_Store
+FairyGUI-egret/node_modules/
