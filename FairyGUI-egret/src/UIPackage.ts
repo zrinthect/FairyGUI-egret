@@ -448,18 +448,16 @@ module fairygui {
             var spriteId: string;
             var frame: Frame;
             var sprite: AtlasSprite;
-            var fx: number;
-            var fy: number;
 
             for (var i: number = 0; i < frameCount; i++) {
                 var nextPos: number = buffer.readShort();
                 nextPos += buffer.position;
 
                 frame = new Frame();
-                fx = buffer.readInt();
-                fy = buffer.readInt();
-                buffer.readInt();//width
-                buffer.readInt();//height
+                frame.rect.x = buffer.readInt();
+                frame.rect.y = buffer.readInt();
+                frame.rect.width = buffer.readInt();//width
+                frame.rect.height = buffer.readInt();//height
                 frame.addDelay = buffer.readInt();
                 spriteId = buffer.readS();
 
@@ -468,7 +466,7 @@ module fairygui {
                     frame.texture = new egret.Texture();
                     frame.texture.bitmapData = atlas.bitmapData;
                     frame.texture.$initData(atlas.$bitmapX + sprite.rect.x, atlas.$bitmapY + sprite.rect.y,
-                        sprite.rect.width, sprite.rect.height, fx, fy, item.width, item.height,
+                        sprite.rect.width, sprite.rect.height, frame.rect.x, frame.rect.y, item.width, item.height,
                         atlas.$sourceWidth, atlas.$sourceHeight, sprite.rotated);
                 }
                 item.frames[i] = frame;
