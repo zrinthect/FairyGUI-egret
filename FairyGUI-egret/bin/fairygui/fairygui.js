@@ -5274,7 +5274,7 @@ var fairygui;
             }
             var str = buffer.readS();
             if (str != null)
-                this.data = str;
+                this.__customData__ = str;
         };
         GObject.prototype.setup_afterAdd = function (buffer, beginPos) {
             buffer.seek(beginPos, 1);
@@ -15583,6 +15583,13 @@ var fairygui;
     var UIObjectFactory = /** @class */ (function () {
         function UIObjectFactory() {
         }
+        UIObjectFactory.setObjTypeExtension = function (typeKey, cls) {
+            var oldCls = this.getObjCls(typeKey);
+            if (!(cls.prototype instanceof oldCls)) {
+                console.error("\u975E\u6CD5\u6269\u5C55\u63A7\u4EF6\u7C7B\u578B(" + typeKey + ")");
+            }
+            this.objTypeExtensions[typeKey] = cls;
+        };
         UIObjectFactory.setPackageItemExtension = function (url, type) {
             if (url == null)
                 throw "Invaild url: " + url;
@@ -15592,7 +15599,7 @@ var fairygui;
             UIObjectFactory.packageItemExtensions[url] = type;
         };
         UIObjectFactory.setLoaderExtension = function (type) {
-            UIObjectFactory.loaderType = type;
+            this.setObjTypeExtension(fairygui.ObjectType.Loader, type);
         };
         UIObjectFactory.resolvePackageItemExtension = function (pi) {
             pi.extensionType = UIObjectFactory.packageItemExtensions["ui://" + pi.owner.id + pi.id];
@@ -15606,46 +15613,54 @@ var fairygui;
                 return this.newObject2(pi.objectType);
         };
         UIObjectFactory.newObject2 = function (type) {
+            var cls = this.objTypeExtensions[type];
+            if (cls == null) {
+                cls = this.getObjCls(type);
+            }
+            if (cls == null) {
+                console.error("\u9519\u8BEF\u63A7\u4EF6\u5BF9\u8C61\u7C7B\u578B(" + type + ")");
+            }
+            return new cls();
+        };
+        UIObjectFactory.getObjCls = function (type) {
             switch (type) {
                 case fairygui.ObjectType.Image:
-                    return new fairygui.GImage();
+                    return fairygui.GImage;
                 case fairygui.ObjectType.MovieClip:
-                    return new fairygui.GMovieClip();
+                    return fairygui.GMovieClip;
                 case fairygui.ObjectType.Component:
-                    return new fairygui.GComponent();
+                    return fairygui.GComponent;
                 case fairygui.ObjectType.Text:
-                    return new fairygui.GTextField();
+                    return fairygui.GTextField;
                 case fairygui.ObjectType.RichText:
-                    return new fairygui.GRichTextField();
+                    return fairygui.GRichTextField;
                 case fairygui.ObjectType.InputText:
-                    return new fairygui.GTextInput();
+                    return fairygui.GTextInput;
                 case fairygui.ObjectType.Group:
-                    return new fairygui.GGroup();
+                    return fairygui.GGroup;
                 case fairygui.ObjectType.List:
-                    return new fairygui.GList();
+                    return fairygui.GList;
                 case fairygui.ObjectType.Graph:
-                    return new fairygui.GGraph();
+                    return fairygui.GGraph;
                 case fairygui.ObjectType.Loader:
-                    if (UIObjectFactory.loaderType != null)
-                        return new UIObjectFactory.loaderType();
-                    else
-                        return new fairygui.GLoader();
+                    return fairygui.GLoader;
                 case fairygui.ObjectType.Button:
-                    return new fairygui.GButton();
+                    return fairygui.GButton;
                 case fairygui.ObjectType.Label:
-                    return new fairygui.GLabel();
+                    return fairygui.GLabel;
                 case fairygui.ObjectType.ProgressBar:
-                    return new fairygui.GProgressBar();
+                    return fairygui.GProgressBar;
                 case fairygui.ObjectType.Slider:
-                    return new fairygui.GSlider();
+                    return fairygui.GSlider;
                 case fairygui.ObjectType.ScrollBar:
-                    return new fairygui.GScrollBar();
+                    return fairygui.GScrollBar;
                 case fairygui.ObjectType.ComboBox:
-                    return new fairygui.GComboBox();
+                    return fairygui.GComboBox;
                 default:
                     return null;
             }
         };
+        UIObjectFactory.objTypeExtensions = {};
         UIObjectFactory.packageItemExtensions = {};
         return UIObjectFactory;
     }());

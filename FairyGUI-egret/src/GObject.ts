@@ -2,6 +2,7 @@
 module fairygui {
 
     export class GObject extends egret.EventDispatcher {
+        public __customData__:any;
         public data: any;
         public packageItem: PackageItem;
         public static draggingObject: GObject;
@@ -1099,7 +1100,7 @@ module fairygui {
 
             var str: string = buffer.readS();
             if (str != null)
-                this.data = str;
+                this.__customData__ = str;
         }
 
         public setup_afterAdd(buffer: ByteBuffer, beginPos: number): void {

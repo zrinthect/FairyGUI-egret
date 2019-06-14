@@ -781,6 +781,7 @@ declare module fairygui {
 }
 declare module fairygui {
     class GObject extends egret.EventDispatcher {
+        __customData__: any;
         data: any;
         packageItem: PackageItem;
         static draggingObject: GObject;
@@ -2056,14 +2057,16 @@ declare module fairygui {
 }
 declare module fairygui {
     class UIObjectFactory {
+        static objTypeExtensions: {};
         static packageItemExtensions: any;
-        private static loaderType;
         constructor();
+        static setObjTypeExtension(typeKey: ObjectType, cls: any): void;
         static setPackageItemExtension(url: string, type: any): void;
         static setLoaderExtension(type: any): void;
         static resolvePackageItemExtension(pi: PackageItem): void;
         static newObject(pi: PackageItem): GObject;
         static newObject2(type: ObjectType): GObject;
+        private static getObjCls;
     }
 }
 declare module fairygui {
