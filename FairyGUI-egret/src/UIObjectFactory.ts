@@ -2,12 +2,19 @@
 module fairygui {
 
     export class UIObjectFactory {
+        public static objTypeExtensions = {};
         public static packageItemExtensions: any = {};
-        private static loaderType: any;
 
         public constructor() {
         }
 
+        public static setObjTypeExtension(typeKey:ObjectType,cls:any):void{
+            let oldCls = this.getObjCls(typeKey);
+            if(!(cls.prototype instanceof oldCls)){
+                console.error(`非法扩展控件类型(${typeKey})`);
+            }
+            this.objTypeExtensions[typeKey] = cls;
+        }
 
         public static setPackageItemExtension(url: string, type: any): void {
             if (url == null)
@@ -21,7 +28,7 @@ module fairygui {
         }
 
         public static setLoaderExtension(type: any): void {
-            UIObjectFactory.loaderType = type;
+            this.setObjTypeExtension(ObjectType.Loader, type);
         }
 
         public static resolvePackageItemExtension(pi: PackageItem): void {
@@ -38,57 +45,65 @@ module fairygui {
         }
 
         public static newObject2(type: ObjectType): GObject {
+            let cls = this.objTypeExtensions[type];
+            if(cls == null){
+                cls = this.getObjCls(type);
+            }
+            if(cls == null){
+                console.error(`错误控件对象类型(${type})`);
+            }
+            return new cls();
+        }
+
+        private static getObjCls(type: ObjectType):any{
             switch (type) {
                 case ObjectType.Image:
-                    return new GImage();
+                    return GImage;
 
                 case ObjectType.MovieClip:
-                    return new GMovieClip();
+                    return GMovieClip;
 
                 case ObjectType.Component:
-                    return new GComponent();
+                    return GComponent;
 
                 case ObjectType.Text:
-                    return new GTextField();
+                    return GTextField;
 
                 case ObjectType.RichText:
-                    return new GRichTextField();
+                    return GRichTextField;
 
                 case ObjectType.InputText:
-                    return new GTextInput();
+                    return GTextInput;
 
                 case ObjectType.Group:
-                    return new GGroup();
+                    return GGroup;
 
                 case ObjectType.List:
-                    return new GList();
+                    return GList;
 
                 case ObjectType.Graph:
-                    return new GGraph();
+                    return GGraph;
 
                 case ObjectType.Loader:
-                    if (UIObjectFactory.loaderType != null)
-                        return new UIObjectFactory.loaderType();
-                    else
-                        return new GLoader();
+                    return GLoader;
 
                 case ObjectType.Button:
-                    return new GButton();
+                    return GButton;
 
                 case ObjectType.Label:
-                    return new GLabel();
+                    return GLabel;
 
                 case ObjectType.ProgressBar:
-                    return new GProgressBar();
+                    return GProgressBar;
 
                 case ObjectType.Slider:
-                    return new GSlider();
+                    return GSlider;
 
                 case ObjectType.ScrollBar:
-                    return new GScrollBar();
+                    return GScrollBar;
 
                 case ObjectType.ComboBox:
-                    return new GComboBox();
+                    return GComboBox;
 
                 default:
                     return null;
