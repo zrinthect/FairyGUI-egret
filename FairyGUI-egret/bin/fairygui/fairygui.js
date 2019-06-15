@@ -4459,7 +4459,7 @@ var fairygui;
                 if (this._pivotX != 0 || this._pivotY != 0) {
                     var px = this._pivotX * this._width;
                     var py = this._pivotY * this._height;
-                    var pt = this._displayObject.matrix.transformPoint(px, py, GObject.sHelperPoint);
+                    var pt = this._displayObject.$getMatrix().transformPoint(px, py, GObject.sHelperPoint);
                     this._pivotOffsetX = this._pivotX * this._width - (pt.x - this._displayObject.x);
                     this._pivotOffsetY = this._pivotY * this._height - (pt.y - this._displayObject.y);
                 }
