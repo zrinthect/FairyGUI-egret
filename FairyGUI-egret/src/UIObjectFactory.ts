@@ -4,8 +4,13 @@ module fairygui {
     export class UIObjectFactory {
         public static objTypeExtensions = {};
         public static packageItemExtensions: any = {};
+        public static plugins = {};
 
         public constructor() {
+        }
+
+        public static addObjPlugin(typeKey:ObjectType, plugin:(o:GObject)=>void):void{
+            this.plugins[typeKey] = plugin;
         }
 
         public static setObjTypeExtension(typeKey:ObjectType,cls:any):void{
@@ -38,13 +43,32 @@ module fairygui {
         }
 
         public static newObject(pi: PackageItem): GObject {
-            if (pi.extensionType != null)
-                return new pi.extensionType();
-            else
-                return this.newObject2(pi.objectType);
+            let cls = pi.extensionType || this.getCls(pi.objectType);
+            return this.createObject(cls);
         }
 
         public static newObject2(type: ObjectType): GObject {
+            let cls = this.getCls(type);
+            return this.createObject(cls);
+        }
+
+        private static createObject(cls:any){
+            let o = new cls();
+            for(let t in this.plugins){
+                let cls = this.getCls(<ObjectType> parseInt(t));
+                if(o instanceof cls){
+                    let plugin = this.plugins[t];
+                    try{
+                        plugin(o);
+                    }catch(e){
+                        console.error(`执行对象(${t})插件发生错误`);
+                    }
+                }
+            }
+            return o;
+        }
+
+        private static getCls(type:ObjectType){
             let cls = this.objTypeExtensions[type];
             if(cls == null){
                 cls = this.getObjCls(type);
@@ -52,11 +76,14 @@ module fairygui {
             if(cls == null){
                 console.error(`错误控件对象类型(${type})`);
             }
-            return new cls();
+            return cls;
         }
 
         private static getObjCls(type: ObjectType):any{
             switch (type) {
+                case ObjectType.Object:
+                    return GObject;
+
                 case ObjectType.Image:
                     return GImage;
 
@@ -97,8 +124,8 @@ module fairygui {
                     return GProgressBar;
 
                 case ObjectType.Slider:
+                    
                     return GSlider;
-
                 case ObjectType.ScrollBar:
                     return GScrollBar;
 

@@ -73,7 +73,8 @@ module fairygui {
         ComboBox,
         ProgressBar,
         Slider,
-        ScrollBar
+        ScrollBar,
+        Object
     };
     export enum ProgressTitleType {
         Percent,

@@ -2903,6 +2903,7 @@ var fairygui;
         ObjectType[ObjectType["ProgressBar"] = 14] = "ProgressBar";
         ObjectType[ObjectType["Slider"] = 15] = "Slider";
         ObjectType[ObjectType["ScrollBar"] = 16] = "ScrollBar";
+        ObjectType[ObjectType["Object"] = 17] = "Object";
     })(ObjectType = fairygui.ObjectType || (fairygui.ObjectType = {}));
     ;
     var ProgressTitleType;
@@ -15583,6 +15584,9 @@ var fairygui;
     var UIObjectFactory = /** @class */ (function () {
         function UIObjectFactory() {
         }
+        UIObjectFactory.addObjPlugin = function (typeKey, plugin) {
+            this.plugins[typeKey] = plugin;
+        };
         UIObjectFactory.setObjTypeExtension = function (typeKey, cls) {
             var oldCls = this.getObjCls(typeKey);
             if (!(cls.prototype instanceof oldCls)) {
@@ -15607,12 +15611,30 @@ var fairygui;
                 pi.extensionType = UIObjectFactory.packageItemExtensions["ui://" + pi.owner.name + "/" + pi.name];
         };
         UIObjectFactory.newObject = function (pi) {
-            if (pi.extensionType != null)
-                return new pi.extensionType();
-            else
-                return this.newObject2(pi.objectType);
+            var cls = pi.extensionType || this.getCls(pi.objectType);
+            return this.createObject(cls);
         };
         UIObjectFactory.newObject2 = function (type) {
+            var cls = this.getCls(type);
+            return this.createObject(cls);
+        };
+        UIObjectFactory.createObject = function (cls) {
+            var o = new cls();
+            for (var t in this.plugins) {
+                var cls_1 = this.getCls(parseInt(t));
+                if (o instanceof cls_1) {
+                    var plugin = this.plugins[t];
+                    try {
+                        plugin(o);
+                    }
+                    catch (e) {
+                        console.error("\u6267\u884C\u5BF9\u8C61(" + t + ")\u63D2\u4EF6\u53D1\u751F\u9519\u8BEF");
+                    }
+                }
+            }
+            return o;
+        };
+        UIObjectFactory.getCls = function (type) {
             var cls = this.objTypeExtensions[type];
             if (cls == null) {
                 cls = this.getObjCls(type);
@@ -15620,10 +15642,12 @@ var fairygui;
             if (cls == null) {
                 console.error("\u9519\u8BEF\u63A7\u4EF6\u5BF9\u8C61\u7C7B\u578B(" + type + ")");
             }
-            return new cls();
+            return cls;
         };
         UIObjectFactory.getObjCls = function (type) {
             switch (type) {
+                case fairygui.ObjectType.Object:
+                    return fairygui.GObject;
                 case fairygui.ObjectType.Image:
                     return fairygui.GImage;
                 case fairygui.ObjectType.MovieClip:
@@ -15662,6 +15686,7 @@ var fairygui;
         };
         UIObjectFactory.objTypeExtensions = {};
         UIObjectFactory.packageItemExtensions = {};
+        UIObjectFactory.plugins = {};
         return UIObjectFactory;
     }());
     fairygui.UIObjectFactory = UIObjectFactory;

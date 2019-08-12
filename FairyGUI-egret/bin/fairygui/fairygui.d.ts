@@ -628,7 +628,8 @@ declare module fairygui {
         ComboBox = 13,
         ProgressBar = 14,
         Slider = 15,
-        ScrollBar = 16
+        ScrollBar = 16,
+        Object = 17
     }
     enum ProgressTitleType {
         Percent = 0,
@@ -2059,13 +2060,17 @@ declare module fairygui {
     class UIObjectFactory {
         static objTypeExtensions: {};
         static packageItemExtensions: any;
+        static plugins: {};
         constructor();
+        static addObjPlugin(typeKey: ObjectType, plugin: (o: GObject) => void): void;
         static setObjTypeExtension(typeKey: ObjectType, cls: any): void;
         static setPackageItemExtension(url: string, type: any): void;
         static setLoaderExtension(type: any): void;
         static resolvePackageItemExtension(pi: PackageItem): void;
         static newObject(pi: PackageItem): GObject;
         static newObject2(type: ObjectType): GObject;
+        private static createObject;
+        private static getCls;
         private static getObjCls;
     }
 }
