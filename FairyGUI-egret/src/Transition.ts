@@ -945,13 +945,7 @@ module fairygui {
 
                 case TransitionActionType.Sound:
                     if (this._playing && item.time >= this._startTime) {
-                        if (item.value.audioClip == null) {
-                            var pi: PackageItem = UIPackage.getItemByURL(item.value.sound);
-                            if (pi)
-                                item.value.audioClip = <egret.Sound>pi.owner.getItemAsset(pi);
-                        }
-                        if (item.value.audioClip)
-                            GRoot.inst.playOneShotSound(item.value.audioClip, item.value.volume);
+                        ToolSet.playSound(item.value.sound);
                     }
                     break;
 
@@ -1225,7 +1219,6 @@ module fairygui {
     class TValue_Sound {
         public sound: string;
         public volume: number;
-        public audioClip: egret.Sound;
     }
 
     class TValue_Transition {

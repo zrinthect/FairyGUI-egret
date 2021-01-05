@@ -455,12 +455,7 @@ module fairygui {
 
         private __click(evt: egret.TouchEvent): void {
             if (this._sound) {
-                var pi: PackageItem = UIPackage.getItemByURL(this._sound);
-                if (pi) {
-                    var sound: egret.Sound = <egret.Sound>pi.owner.getItemAsset(pi);
-                    if (sound)
-                        GRoot.inst.playOneShotSound(sound, this._soundVolumeScale);
-                }
+               ToolSet.playSound(this._sound);
             }
 
             if (this._mode == ButtonMode.Check) {

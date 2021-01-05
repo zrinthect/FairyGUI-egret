@@ -131,6 +131,14 @@ module fairygui {
             return ToolSet.defaultUBBParser.parse(text);
         }
 
+        public static defaultSoundPlayer: SoundPlayer;
+        public static playSound(uri: string, vol: number = 1) {
+            if(ToolSet.defaultSoundPlayer == null){
+                ToolSet.defaultSoundPlayer = new SoundPlayer();
+            }
+            ToolSet.defaultSoundPlayer.play(uri, vol);
+        }
+
         public static clamp(value: number, min: number, max: number): number {
             if (value < min)
                 value = min;
