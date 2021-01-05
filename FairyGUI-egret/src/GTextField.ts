@@ -359,6 +359,7 @@ module fairygui {
 
             this.switchBitmapMode(false);
             this._textField.width = this._widthAutoSize ? (this.maxWidth <= 0 ? 10000 : this.maxWidth) : Math.ceil(this.width);
+            this._textField.wordWrap = !this._widthAutoSize && this._textField.multiline;
             this.updateTextFieldText();
             this._textWidth = Math.ceil(this._textField.textWidth);
             if (this._textWidth > 0)
