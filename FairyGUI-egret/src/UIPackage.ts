@@ -380,10 +380,22 @@ module fairygui {
                         if (sprite != null) {
                             var atlas: egret.Texture = <egret.Texture>this.getItemAsset(sprite.atlas);
                             item.texture = new egret.Texture();
-                            item.texture.bitmapData = atlas.bitmapData;
-                            item.texture.$initData(atlas.$bitmapX + sprite.rect.x, atlas.$bitmapY + sprite.rect.y,
-                                sprite.rect.width, sprite.rect.height, 0, 0, sprite.rect.width, sprite.rect.height,
-                                atlas.$sourceWidth, atlas.$sourceHeight, sprite.rotated);
+                            item.texture.disposeBitmapData = false;
+                            item.texture.$bitmapData = atlas.bitmapData;
+                            var scale = egret.$TextureScaleFactor;
+                            item.texture.$initData(
+                                atlas.$bitmapX * scale + sprite.rect.x,
+                                atlas.$bitmapY * scale + sprite.rect.y,
+                                sprite.rect.width,
+                                sprite.rect.height,
+                                0,
+                                0,
+                                sprite.rect.width,
+                                sprite.rect.height,
+                                atlas.$sourceWidth,
+                                atlas.$sourceHeight,
+                                sprite.rotated
+                            );
                         }
                     }
                     return item.texture;
@@ -464,10 +476,22 @@ module fairygui {
                 if (spriteId != null && (sprite = this._sprites[spriteId]) != null) {
                     var atlas: egret.Texture = <egret.Texture>this.getItemAsset(sprite.atlas);
                     frame.texture = new egret.Texture();
-                    frame.texture.bitmapData = atlas.bitmapData;
-                    frame.texture.$initData(atlas.$bitmapX + sprite.rect.x, atlas.$bitmapY + sprite.rect.y,
-                        sprite.rect.width, sprite.rect.height, frame.rect.x, frame.rect.y, item.width, item.height,
-                        atlas.$sourceWidth, atlas.$sourceHeight, sprite.rotated);
+                    frame.texture.disposeBitmapData = false;
+                    frame.texture.$bitmapData = atlas.bitmapData;
+                    var scale = egret.$TextureScaleFactor;
+                    frame.texture.$initData(
+                        atlas.$bitmapX * scale + sprite.rect.x,
+                        atlas.$bitmapY * scale + sprite.rect.y,
+                        sprite.rect.width,
+                        sprite.rect.height,
+                        frame.rect.x/scale,
+                        frame.rect.y/scale,
+                        item.width,
+                        item.height,
+                        atlas.$sourceWidth,
+                        atlas.$sourceHeight,
+                        sprite.rotated
+                    );
                 }
                 item.frames[i] = frame;
 
@@ -534,9 +558,22 @@ module fairygui {
                 }
                 else {
                     bg.texture = new egret.Texture();
-                    bg.texture.bitmapData = mainTexture.bitmapData;
-                    bg.texture.$initData(mainTexture.$bitmapX + bx + mainSprite.rect.x, mainTexture.$bitmapY + by + mainSprite.rect.y,
-                        bg.width, bg.height, 0, 0, bg.width, bg.height, bg.width, bg.height, mainSprite.rotated);
+                    bg.texture.disposeBitmapData = false;
+                    bg.texture.$bitmapData = mainTexture.bitmapData;
+                    var scale = egret.$TextureScaleFactor;
+                    bg.texture.$initData(
+                        mainTexture.$bitmapX * scale + bx + mainSprite.rect.x,
+                        mainTexture.$bitmapY * scale + by + mainSprite.rect.y,
+                        bg.width,
+                        bg.height,
+                        0,
+                        0,
+                        bg.width,
+                        bg.height,
+                        mainTexture.bitmapData.width,
+                        mainTexture.bitmapData.height,
+                        mainSprite.rotated
+                    );
                 }
 
                 if (font.ttf)
