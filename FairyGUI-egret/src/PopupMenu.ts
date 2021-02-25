@@ -24,10 +24,10 @@ module fairygui {
             this._contentPane.dispose();
         }
 
-        public addItem(caption: string, callback: Function = null): GButton {
+        public addItem(caption: string, callback: Function = null, callbackObj:any = null): GButton {
             var item: GButton = this._list.addItemFromPool().asButton;
             item.title = caption;
-            item.data = callback;
+            item.data = [callback, callbackObj];
             item.grayed = false;
             var c: Controller = item.getController("checked");
             if (c != null)
@@ -35,11 +35,11 @@ module fairygui {
             return item;
         }
 
-        public addItemAt(caption: string, index: number, callback: Function = null): GButton {
+        public addItemAt(caption: string, index: number, callback: Function = null, callbackObj:any = null): GButton {
             var item: GButton = this._list.getFromPool().asButton;
             this._list.addChildAt(item, index);
             item.title = caption;
-            item.data = callback;
+            item.data = [callback, callbackObj];
             item.grayed = false;
             var c: Controller = item.getController("checked");
             if (c != null)
@@ -159,10 +159,13 @@ module fairygui {
             var r: GRoot = <GRoot>(this._contentPane.parent);
             r.hidePopup(this.contentPane);
             if (item.data != null) {
-                if (item.data.length == 1)
-                    item.data(evt);
-                else
-                    item.data();
+                let f:Function = item.data[0];
+                let o = item.data[1];
+                if (f.length == 1){
+                    f.call(o,evt);
+                } else{
+                    f.call(o);
+                }
             }
         }
 
