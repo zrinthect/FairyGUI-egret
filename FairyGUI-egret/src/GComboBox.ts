@@ -373,7 +373,7 @@ public get titleColor(): number {
             if (this.dropdown.parent instanceof GRoot)
                 (<GRoot><any>(this.dropdown.parent)).hidePopup();
 
-            this._selectedIndex = index;
+            this.selectedIndex = index;
             if (this._selectedIndex >= 0)
                 this.text = this._items[this._selectedIndex];
             else
